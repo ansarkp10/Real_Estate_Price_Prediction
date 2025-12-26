@@ -1,0 +1,128 @@
+{% extends 'estate_app/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Predict Property Prices with AI</h1>
+                <p class="lead mb-4 opacity-90">
+                    Get instant, accurate property price predictions using advanced machine learning.
+                    No training needed - just enter details and get results!
+                </p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'predict' %}" class="btn btn-light btn-lg">
+                    <i class="bi bi-lightning-charge"></i> Make Prediction
+                </a>
+                {% else %}
+                <div class="d-flex gap-3">
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg">
+                        <i class="bi bi-person-plus"></i> Get Started Free
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-cpu"></i>
+                </div>
+                <h4>AI Ready</h4>
+                <p class="mb-0 opacity-75">Model auto-trained on 5000+ properties</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-lightning"></i>
+                </div>
+                <h4>Instant Predictions</h4>
+                <p class="text-muted">
+                    Get price estimates in seconds. No waiting, no complicated setup.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h4>No Training Needed</h4>
+                <p class="text-muted">
+                    ML model is pre-trained automatically. Just start predicting!
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h4>Save & Track</h4>
+                <p class="text-muted">
+                    Save all your predictions and track them in your personal dashboard.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Predictions -->
+{% if user.is_authenticated %}
+    {% if recent_predictions %}
+    <div class="card p-4 mb-5">
+        <h3 class="mb-4">Recent Predictions</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Size</th>
+                        <th>Area Type</th>
+                        <th>Predicted Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pred in recent_predictions %}
+                    <tr>
+                        <td>{{ pred.location }}</td>
+                        <td><span class="badge bg-primary">{{ pred.size }}</span></td>
+                        <td>{{ pred.area_type }}</td>
+                        <td class="fw-bold">₹{{ pred.predicted_price|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+
+    <!-- Call to Action -->
+    <div class="text-center py-5">
+        <h2 class="mb-4">Ready to Predict?</h2>
+        <p class="lead text-muted mb-4">
+            Join thousands of users who trust our AI for property price predictions.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'predict' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-calculator"></i> Start Predicting
+        </a>
+        {% else %}
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-person-plus"></i> Sign Up Free
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

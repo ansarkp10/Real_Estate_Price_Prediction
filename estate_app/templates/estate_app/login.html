@@ -1,0 +1,322 @@
+{% extends 'estate_app/base.html' %}
+
+{% block title %}Login - EstateAI{% endblock %}
+
+{% block content %}
+<style>
+    /* Clean Login Styles */
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 400px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        text-align: center;
+    }
+    
+    .login-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .login-icon i {
+        font-size: 28px;
+    }
+    
+    .login-body {
+        padding: 2.5rem 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #475569;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        z-index: 2;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 3rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+    
+    .login-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .login-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+    }
+    
+    .login-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .login-link:hover {
+        text-decoration: underline;
+    }
+    
+    .demo-info {
+        max-width: 400px;
+        margin: 2rem auto 0;
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+    }
+    
+    .demo-info h5 {
+        color: #334155;
+        margin-bottom: 1rem;
+    }
+    
+    .demo-credentials {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .credential-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .credential-row:last-child {
+        border-bottom: none;
+    }
+    
+    .credential-label {
+        font-weight: 500;
+        color: #475569;
+    }
+    
+    .credential-value {
+        font-family: 'Courier New', monospace;
+        color: #334155;
+        font-weight: 500;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <h2 style="margin-bottom: 0.5rem;">Welcome Back</h2>
+            <p style="opacity: 0.9; margin: 0;">Sign in to your account</p>
+        </div>
+        
+        <!-- Body -->
+        <div class="login-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <!-- Username -->
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text" 
+                               name="username" 
+                               class="form-input {% if form.username.errors %}is-invalid{% endif %}" 
+                               placeholder="Enter your username"
+                               value="{{ form.username.value|default:'' }}"
+                               required>
+                        {% if form.username.errors %}
+                        <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">
+                            {% for error in form.username.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" 
+                               name="password" 
+                               id="password"
+                               class="form-input {% if form.password.errors %}is-invalid{% endif %}" 
+                               placeholder="Enter your password"
+                               required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        {% if form.password.errors %}
+                        <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">
+                            {% for error in form.password.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Remember & Forgot -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 1.5rem 0;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="remember" name="remember" style="width: 18px; height: 18px;">
+                        <span style="color: #64748b; font-size: 0.875rem;">Remember me</span>
+                    </label>
+                    <a href="#" style="color: #667eea; font-size: 0.875rem; text-decoration: none;">
+                        Forgot password?
+                    </a>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="login-btn">
+                    <i class="bi bi-box-arrow-in-right" style="margin-right: 8px;"></i>
+                    Sign In
+                </button>
+                
+                <!-- Register Link -->
+                <div class="login-footer">
+                    <p style="margin: 0;">
+                        Don't have an account? 
+                        <a href="{% url 'register' %}" class="login-link">Create Account</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Demo Account Info -->
+<div class="demo-info">
+    <h5 style="display: flex; align-items: center; gap: 0.5rem;">
+        <i class="bi bi-info-circle" style="color: #667eea;"></i>
+        Try Demo Account
+    </h5>
+    <div class="demo-credentials">
+        <div class="credential-row">
+            <span class="credential-label">Username:</span>
+            <span class="credential-value">demo</span>
+        </div>
+        <div class="credential-row">
+            <span class="credential-label">Password:</span>
+            <span class="credential-value">demopassword123</span>
+        </div>
+    </div>
+    <p style="color: #64748b; font-size: 0.875rem; margin: 0; text-align: center;">
+        Use this demo account to explore all features instantly
+    </p>
+</div>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = document.querySelector(`#${inputId} + .password-toggle i`);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'estate_app/base.html' %}
+
+{% block title %}Predict Price{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="fw-bold mb-3">Property Price Predictor</h1>
+                <p class="lead text-muted">Enter property details below to get instant AI prediction</p>
+            </div>
+
+            <!-- Prediction Result -->
+            {% if prediction %}
+            <div class="prediction-result mb-5">
+                <h3 class="mb-4"><i class="bi bi-check-circle"></i> Prediction Complete!</h3>
+                <div class="prediction-amount">₹{{ prediction }} Lakhs</div>
+                <p class="mb-0">Your prediction has been saved to your account.</p>
+            </div>
+            {% endif %}
+
+            <!-- Prediction Form -->
+            <div class="card p-4 p-md-5">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        <!-- Row 1 -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Area Type</label>
+                            <select name="area_type" class="form-select" required>
+                                <option value="">Select Area Type</option>
+                                {% for value, label in area_types %}
+                                <option value="{{ value }}" {% if form_data.area_type == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Availability</label>
+                            <select name="availability" class="form-select" required>
+                                <option value="">Select Availability</option>
+                                {% for value, label in availability_options %}
+                                <option value="{{ value }}" {% if form_data.availability == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Location</label>
+                            <select name="location" class="form-select" required>
+                                <option value="">Select Location</option>
+                                {% for location in locations %}
+                                <option value="{{ location }}" {% if form_data.location == location %}selected{% endif %}>{{ location }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Size</label>
+                            <select name="size" class="form-select" required>
+                                <option value="">Select Size</option>
+                                {% for size in sizes %}
+                                <option value="{{ size }}" {% if form_data.size == size %}selected{% endif %}>{{ size }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Society (Optional)</label>
+                            <input type="text" name="society" class="form-control" 
+                                   placeholder="e.g., Prestige, Sobha"
+                                   value="{{ form_data.society }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Total SQFT</label>
+                            <input type="number" name="total_sqft" class="form-control" 
+                                   placeholder="e.g., 1200"
+                                   value="{{ form_data.total_sqft }}" 
+                                   required min="100" max="10000">
+                        </div>
+
+                        <!-- Row 4 -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Bathrooms</label>
+                            <input type="number" name="bath" class="form-control" 
+                                   value="{{ form_data.bath|default:'2' }}"
+                                   required min="1" max="10">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Balconies</label>
+                            <input type="number" name="balcony" class="form-control" 
+                                   value="{{ form_data.balcony|default:'1' }}"
+                                   required min="0" max="5">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 mt-4">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-calculator"></i> Predict Price
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Help Text -->
+            <div class="card p-4 mt-4">
+                <h5 class="mb-3"><i class="bi bi-lightbulb"></i> How to use:</h5>
+                <ol class="mb-0">
+                    <li>Fill in all required fields (marked with *)</li>
+                    <li>Society field is optional</li>
+                    <li>SQFT should be in square feet</li>
+                    <li>Click "Predict Price" to get instant AI prediction</li>
+                    <li>Prediction will be saved to your account automatically</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

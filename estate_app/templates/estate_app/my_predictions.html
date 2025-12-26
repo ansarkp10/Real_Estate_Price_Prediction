@@ -1,0 +1,83 @@
+{% extends 'estate_app/base.html' %}
+
+{% block title %}My Predictions{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="fw-bold mb-2">My Predictions</h1>
+                    <p class="text-muted mb-0">All your saved property price predictions</p>
+                </div>
+                <span class="badge bg-primary fs-5 px-4 py-2">{{ total_count }} Predictions</span>
+            </div>
+
+            <!-- Predictions Table -->
+            {% if predictions %}
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Size</th>
+                                <th>SQFT</th>
+                                <th>Area Type</th>
+                                <th>Predicted Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in predictions %}
+                            <tr>
+                                <td>{{ pred.created_at|date:"M d, Y" }}</td>
+                                <td>{{ pred.location }}</td>
+                                <td><span class="badge bg-primary">{{ pred.size }}</span></td>
+                                <td>{{ pred.total_sqft }}</td>
+                                <td><span class="badge bg-light text-dark">{{ pred.area_type }}</span></td>
+                                <td class="fw-bold">₹{{ pred.predicted_price|floatformat:2 }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'delete_prediction' pred.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('Delete this prediction?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% else %}
+            <div class="card p-5 text-center">
+                <div class="feature-icon mx-auto mb-4">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h4>No Predictions Yet</h4>
+                <p class="text-muted mb-4">Make your first prediction to see it here</p>
+                <a href="{% url 'predict' %}" class="btn btn-primary">
+                    <i class="bi bi-calculator"></i> Make First Prediction
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-5">
+                <a href="{% url 'predict' %}" class="btn btn-primary">
+                    <i class="bi bi-calculator"></i> Make New Prediction
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-house"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
